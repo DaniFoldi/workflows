@@ -1,0 +1,70 @@
+name: Reusable Gradle action
+
+on:
+  workflow_call:
+    inputs:
+      steps:
+        required: true
+        type: string
+      java-version:
+        required: true
+        type: number
+      java-distribution:
+        default: "temurin"
+        type: string
+      directory:
+        default: "./"
+        type: string
+    secrets:
+      grade-properties:
+        default: ""
+        type: string
+
+jobs:
+  gradle-action:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout repository"
+        uses: actions/checkout@v2
+
+      - name: "Setup jdk"
+        uses: actions/setup-java@v2
+        with:
+          java-version: ${{ inputs.java-version }}
+          distribution: ${{ inputs.java-distribution }}
+
+      - name: "Cache gradle dependencies"
+        uses: actions/cache@v1
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: ${{ runner.os }}-gradle-
+
+      - name: "Inject gradle properties"
+        if: ${{ secrets.gradle-properties }} != ''
+        run: |
+          if [ ! -e "${{ inputs.directory }}/gradle.properties" ]
+          then
+            touch ${{ inputs.directory }}/gradle.properties
+          fi
+          echo "${{ secrets.gradle-properties }}" >> ${{ inputs.directory }}/gradle.properties
+
+      - name: "Refresh gradle dependencies"
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: --refresh-dependencies
+          build-root-directory: ${{ inputs.directory }}
+
+      - name: "Run gradle build steps"
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: ${{ inputs.steps }}
+          build-root-directory: ${{ inputs.directory }}
+
+      - name: "Stop gradle daemon"
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: --stop
+          build-root-directory: ${{ inputs.directory }}
