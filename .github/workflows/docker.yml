@@ -1,0 +1,89 @@
+name: Docker build container
+
+on:
+  workflow_call:
+    inputs:
+      registry:
+        default: ghcr.io
+        type: string
+      registry_username:
+        default: ${{ github.repository_owner }}
+        type: string
+      dockerfile:
+        default: Dockerfile
+        type: string
+      dockerfile_target:
+        default: app
+        type: string
+    secrets:
+      registry_password:
+        default: ${{ secrets.GITHUB_TOKEN }}
+        type: string
+
+jobs:
+  build-container:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+
+    - name: Set up Docker Buildx
+      id: buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Login to registry
+      uses: docker/login-action@v1
+      with:
+        registry: ${{ inputs.registry }}
+        username: ${{ inputs.registry_username }}
+        password: ${{ secrets.registry_password }}
+
+    - name: Get latest commit hash
+      id: fetch-latest-hash
+      run: echo "::set-output name=latest-hash::$(git rev-parse --short $GITHUB_SHA)"
+
+    - name: Fetch latest release version
+      id: fetch-latest-release
+      uses: reloc8/action-latest-release-version@1.0.0
+
+    - name: Lowercase repo name
+      id: repo-name
+      run: echo "::set-output name=lowercase-name::$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')"
+
+    - name: Get container tags
+      id: container-tags
+      run: |
+          if [ ${{ github.event_name }} == "release" ]
+          then
+            echo "::set-output name=tags::${{ inputs.registry }}/${{ steps.repo-name.outputs.lowercase-name }}:stable,${{ inputs.registry }}/${{ steps.repo-name.outputs.lowercase-name }}:${{ steps.fetch-latest-release.outputs.latest-release }}"
+          else
+            echo "::set-output name=tags::${{ inputs.registry }}/${{ steps.repo-name.outputs.lowercase-name }}:latest,${{ inputs.registry }}/${{ steps.repo-name.outputs.lowercase-name }}:${{ steps.fetch-latest-hash.outputs.latest-hash }}"
+          fi
+
+    - name: Fetch dockerfile
+      id: fetch-dockerfile
+      run: |
+          if [ ${{ inputs.dockerfile }} == *"://"* ]
+          then
+            wget -O downloaded.dockerfile ${{ inputs.dockerfile }}
+            echo "::set-output name=dockerfile::downloaded.dockerfile"
+          else
+            echo "::set-output name=dockerfile::${{ inputs.dockerfile }}"
+          fi
+
+    - name: Build and push
+      id: docker-build
+      uses: docker/build-push-action@v2
+      with:
+        builder: ${{ steps.buildx.outputs.name }}
+        context: .
+        file: ${{ inputs.dockerfile }}
+        target: ${{ inputs.dockerfile_app }}
+        push: true
+        tags: ${{ steps.container-tags.outputs.tags }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
