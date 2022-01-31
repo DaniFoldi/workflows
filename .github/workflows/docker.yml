@@ -17,8 +17,7 @@ on:
         type: string
     secrets:
       registry_password:
-        default: ${{ secrets.GITHUB_TOKEN }}
-        type: string
+        required: true
 
 jobs:
   build-container:
