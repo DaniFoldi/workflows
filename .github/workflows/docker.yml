@@ -63,17 +63,6 @@ jobs:
             echo "::set-output name=tags::${{ inputs.registry_url }}/${{ steps.repo-name.outputs.lowercase-name }}:latest,${{ inputs.registry_url }}/${{ steps.repo-name.outputs.lowercase-name }}:${{ steps.fetch-latest-hash.outputs.latest-hash }}"
           fi
 
-    - name: Fetch dockerfile
-      id: fetch-dockerfile
-      run: |
-          if [ ${{ inputs.dockerfile }} == *"://"* ]
-          then
-            wget -O downloaded.dockerfile ${{ inputs.dockerfile }}
-            echo "::set-output name=dockerfile::downloaded.dockerfile"
-          else
-            echo "::set-output name=dockerfile::${{ inputs.dockerfile }}"
-          fi
-
     - name: Build and push
       id: docker-build
       uses: docker/build-push-action@v2
