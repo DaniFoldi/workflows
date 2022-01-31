@@ -3,7 +3,7 @@ name: Docker build container
 on:
   workflow_call:
     inputs:
-      registry:
+      registry_url:
         default: ghcr.io
         type: string
       registry_username:
@@ -38,7 +38,7 @@ jobs:
     - name: Login to registry
       uses: docker/login-action@v1
       with:
-        registry: ${{ inputs.registry }}
+        registry: ${{ inputs.registry_url }}
         username: ${{ inputs.registry_username }}
         password: ${{ secrets.registry_password }}
 
@@ -59,9 +59,9 @@ jobs:
       run: |
           if [ ${{ github.event_name }} == "release" ]
           then
-            echo "::set-output name=tags::${{ inputs.registry }}/${{ steps.repo-name.outputs.lowercase-name }}:stable,${{ inputs.registry }}/${{ steps.repo-name.outputs.lowercase-name }}:${{ steps.fetch-latest-release.outputs.latest-release }}"
+            echo "::set-output name=tags::${{ inputs.registry_url }}/${{ steps.repo-name.outputs.lowercase-name }}:stable,${{ inputs.registry_url }}/${{ steps.repo-name.outputs.lowercase-name }}:${{ steps.fetch-latest-release.outputs.latest-release }}"
           else
-            echo "::set-output name=tags::${{ inputs.registry }}/${{ steps.repo-name.outputs.lowercase-name }}:latest,${{ inputs.registry }}/${{ steps.repo-name.outputs.lowercase-name }}:${{ steps.fetch-latest-hash.outputs.latest-hash }}"
+            echo "::set-output name=tags::${{ inputs.registry_url }}/${{ steps.repo-name.outputs.lowercase-name }}:latest,${{ inputs.registry_url }}/${{ steps.repo-name.outputs.lowercase-name }}:${{ steps.fetch-latest-hash.outputs.latest-hash }}"
           fi
 
     - name: Fetch dockerfile
