@@ -78,6 +78,7 @@ jobs:
       - name: "Tag latest commit"
         if: inputs.github-release-files != ''
         run: |
+          gh auth setup-git
           git tag "v${{ steps.get-version.outputs.version }}" -a -m "${{ github.event.commits[0].message }}"
           git push origin "v${{ steps.get-version.outputs.version }}"
 
