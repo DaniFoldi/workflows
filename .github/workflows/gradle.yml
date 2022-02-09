@@ -69,7 +69,7 @@ jobs:
           build-root-directory: ${{ inputs.directory }}
 
       - name: "Create draft GitHub release"
-        if: inputs.github-release != ""
+        if: inputs.github-release != ''
         run: |
           gh release create
           gh release upload ${{ inputs.directory }}/${{ inputs.github-release }}
