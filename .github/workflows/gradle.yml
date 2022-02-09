@@ -73,9 +73,8 @@ jobs:
       - name: "Create draft GitHub release"
         if: inputs.github-release-files != ''
         run: |
-          export TAG=cat ${{ inputs.directory }}/build.gradle | sed -rn "s/^version\s*=?\s*\(?\s*('|\")(.*)('|\")\s*\)?$/\2/p" | head -n 1
           echo ${{ secrets.github-token }} | gh auth login --with-token
-          gh release create -d --generate-notes "$TAG" ${{ inputs.directory }}/${{ inputs.github-release-files }}
+          gh release create -d --generate-notes "v$(cat ${{ inputs.directory }}/build.gradle | sed -rn "s/^version\s*=?\s*\(?\s*('|\")(.*)('|\")\s*\)?$/\2/p" | head -n 1)" ${{ inputs.directory }}/${{ inputs.github-release-files }}
 
       - name: "Stop gradle daemon"
         uses: gradle/gradle-build-action@v2
