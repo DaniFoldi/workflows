@@ -15,7 +15,7 @@ on:
       directory:
         default: "."
         type: string
-      github-release:
+      github-release-files:
         default: ""
         type: string
       add-gradle-properties:
@@ -23,6 +23,8 @@ on:
         type: boolean
     secrets:
       gradle-properties:
+        required: false
+      github-token:
         required: false
 
 jobs:
@@ -39,7 +41,7 @@ jobs:
           distribution: ${{ inputs.java-distribution }}
 
       - name: "Cache gradle dependencies"
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         with:
           path: |
             ~/.gradle/caches
@@ -69,10 +71,11 @@ jobs:
           build-root-directory: ${{ inputs.directory }}
 
       - name: "Create draft GitHub release"
-        if: inputs.github-release != ''
+        if: inputs.github-release-files != ''
         run: |
-          gh release create
-          gh release upload ${{ inputs.directory }}/${{ inputs.github-release }}
+          export TAG=cat ${{ inputs.directory }}/build.gradle | sed -rn "s/^version\s*=?\s*\(?\s*('|\")(.*)('|\")\s*\)?$/\2/p" | head -n 1
+          echo ${{ secrets.github-token }} | gh auth login --with-token
+          gh release create -d --generate-notes "$TAG" ${{ inputs.directory }}/${{ inputs.github-release-files }}
 
       - name: "Stop gradle daemon"
         uses: gradle/gradle-build-action@v2
