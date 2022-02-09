@@ -70,11 +70,29 @@ jobs:
           arguments: ${{ inputs.steps }}
           build-root-directory: ${{ inputs.directory }}
 
+      - name: "Get release version from gradle"
+        id: get-version
+        run: |
+          echo "::set-output name=version::$(cat ${{ inputs.directory }}/build.gradle | sed -rn "s/^version\s*=?\s*\(?\s*('|\")(.*)('|\")\s*\)?$/\2/p" | head -n 1)"
+
+      - name: "Tag latest commit"
+        if: inputs.github-release-files != ''
+        run: |
+          git tag "v${{ steps.get-version.outputs.version }}" -a -m "${{ github.event.commits[0].message }}"
+          git push origin "v${{ steps.get-version.outputs.version }}"
+
+      - name: "Archive source az zip and tar.gz"
+        if: inputs.github-release-files != ''
+        run: |
+          git ls-tree --full-tree -r --name-only HEAD > archive-files.txt
+          cat archive-files.txt | zip -q@T "${{ github.event.repository.name }}-${{ steps.get-version.outputs.version }}.zip"
+          tar -czf ${{ github.event.repository.name }}-${{ steps.get-version.outputs.version }}.tar.gz -T archive-files.txt
+
       - name: "Create draft GitHub release"
         if: inputs.github-release-files != ''
         run: |
           echo ${{ secrets.github-token }} | gh auth login --with-token
-          gh release create -d --generate-notes "v$(cat ${{ inputs.directory }}/build.gradle | sed -rn "s/^version\s*=?\s*\(?\s*('|\")(.*)('|\")\s*\)?$/\2/p" | head -n 1)" ${{ inputs.directory }}/${{ inputs.github-release-files }}
+          gh release create -d --generate-notes "v${{ steps.get-version.outputs.version }}" ${{ inputs.directory }}/${{ inputs.github-release-files }} "${{ github.event.repository.name }}-${{ steps.get-version.outputs.version }}.tar.gz#Source code" "${{ github.event.repository.name }}-${{ steps.get-version.outputs.version }}.zip#Source code"
 
       - name: "Stop gradle daemon"
         uses: gradle/gradle-build-action@v2
