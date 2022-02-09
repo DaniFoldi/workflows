@@ -78,6 +78,7 @@ jobs:
       - name: "Tag latest commit"
         if: inputs.github-release-files != ''
         run: |
+          echo ${{ secrets.github-token }} | gh auth login --with-token
           gh auth setup-git
           git tag "v${{ steps.get-version.outputs.version }}" -a -m "${{ github.event.commits[0].message }}"
           git push origin "v${{ steps.get-version.outputs.version }}"
@@ -92,7 +93,6 @@ jobs:
       - name: "Create draft GitHub release"
         if: inputs.github-release-files != ''
         run: |
-          echo ${{ secrets.github-token }} | gh auth login --with-token
           gh release create -d --generate-notes "v${{ steps.get-version.outputs.version }}" ${{ inputs.directory }}/${{ inputs.github-release-files }} "${{ github.event.repository.name }}-${{ steps.get-version.outputs.version }}.tar.gz#Source code" "${{ github.event.repository.name }}-${{ steps.get-version.outputs.version }}.zip#Source code"
 
       - name: "Stop gradle daemon"
