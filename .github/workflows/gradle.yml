@@ -18,6 +18,9 @@ on:
       github-release:
         default: ""
         type: string
+      add-gradle-properties:
+        default: false
+        type: boolean
     secrets:
       gradle-properties:
         required: false
@@ -45,7 +48,7 @@ jobs:
           restore-keys: ${{ runner.os }}-gradle-
 
       - name: "Inject gradle properties"
-        if: (secrets.gradle-properties || '') != ''
+        if: inputs.add-gradle-properties
         run: |
           if [ ! -e "${{ inputs.directory }}/gradle.properties" ]
           then
