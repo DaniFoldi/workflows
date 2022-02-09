@@ -45,7 +45,7 @@ jobs:
           restore-keys: ${{ runner.os }}-gradle-
 
       - name: "Inject gradle properties"
-        if: ${{ secrets.gradle-properties || '' }} != ''
+        if: (secrets.gradle-properties || '') != ''
         run: |
           if [ ! -e "${{ inputs.directory }}/gradle.properties" ]
           then
