@@ -19,7 +19,7 @@ on:
         default: ""
         type: string
     secrets:
-      grade-properties:
+      gradle-properties:
         required: false
 
 jobs:
