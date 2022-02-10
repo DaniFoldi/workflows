@@ -70,7 +70,7 @@ jobs:
         builder: ${{ steps.buildx.outputs.name }}
         context: .
         file: ${{ inputs.dockerfile }}
-        target: ${{ inputs.dockerfile_app }}
+        target: ${{ inputs.dockerfile_target }}
         push: true
         tags: ${{ steps.container-tags.outputs.tags }}
         cache-from: type=gha
