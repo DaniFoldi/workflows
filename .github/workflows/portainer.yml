@@ -18,6 +18,9 @@ on:
       template:
         type: string
         default: '{}'
+      repository:
+        type: string
+        default: ${{ github.repository }}
     secrets:
       portainer_host:
         required: true
