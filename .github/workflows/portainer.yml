@@ -1,39 +1,67 @@
-name: Portainer deploy stack
+name: Deploy stack to Portainer
 
 on:
   workflow_call:
-
+    inputs:
+      portainer_user:
+        type: string
+        required: true
+      endpoint_id:
+        type: number
+        required: true
+      stack_name:
+        type: string
+        required: true
+      stack_file:
+        type: string
+        required: true
+      template:
+        type: string
+        default: '{}'
+    secrets:
+      portainer_host:
+        required: true
+      portainer_key:
+        required: true
+      gh_token:
+        required: true
 jobs:
   deploy-stack:
-    runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Checkout
-      uses: actions/checkout@v2
+      - name: Checkout target repository
+        if: inputs.template == 'LATEST-VERSIONS'
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.gh_token }}
+          repository: ${{ inputs.repository }}
+          path: target
 
-    - name: Get latest commit hash
-      id: fetch-latest-hash
-      run: echo "::set-output name=latest-hash::$(git rev-parse --short $GITHUB_SHA)"
+      - name: Fetch latest release data
+        id: latest
+        if: inputs.template == 'LATEST-VERSIONS'
+        working-directory: target
+        run: |
+          git fetch --tags
+          git fetch --prune --unshallow || true
+          echo "::set-output name=release::$(git describe --abbrev=0 --tags)"
+          echo "::set-output name=hash::$(git rev-parse --short HEAD)"
+ 
+      - name: Set template output
+        id: template
+        if: inputs.template == 'LATEST-VERSIONS'
+        run: |
+          echo "::set-output name=variables::{\"stable\": \"${{ steps.latest.outputs.release }}\", \"beta\": \"${{ steps.latest.outputs.hash }}\"}"
 
-    - name: Fetch latest release version
-      id: fetch-latest-release
-      uses: reloc8/action-latest-release-version@1.0.0
-
-    - name: Lowercase repo name
-      id: repo-name
-      run: echo "::set-output name=lowercase-name::$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')"
-
-    - name: Set stack name
-      id: stack-name
-      run: echo "::set-output name=name::gh-$(echo '${{ steps.repo-name.outputs.lowercase-name }}' | perl -ne 's/(?<=\/)([a-zA-Z-_]+)/$1/; print $1;')"
-
-    - name: Deploy stack to Portainer
-      uses: DaniFoldi/portainer-stack-deploy@v1.3.1
-      with:
-        portainer-host: ${{ secrets.PORTAINER_HOST }}
-        username: ci
-        password: ${{ secrets.PORTAINER_KEY }}
-        endpoint-id: 2
-        stack-name: ${{ steps.stack-name.outputs.name }}
-        stack-definition: docker-compose.yml
-        variables: '{"stable": "${{ steps.fetch-latest-release.outputs.latest-release }}", "beta": "${{ steps.fetch-latest-hash.outputs.latest-hash }}"}'
+      - name: Deploy stack to Portainer
+        uses: carlrygart/portainer-stack-deploy@v1
+        with:
+          portainer-host: ${{ secrets.portainer_host }}
+          username: ${{ inputs.portainer_user }}
+          password: ${{ secrets.portainer_key }}
+          endpoint-id: ${{ inputs.endpoint }}
+          stack-name: ${{ inputs.stack_name }}
+          stack-definition: ${{ inputs.stack_file }}
+          template-variables: ${{ steps.template.outputs.variables || inputs.template }}

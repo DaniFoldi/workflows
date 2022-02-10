@@ -1,4 +1,4 @@
-name: Reusable Gradle action
+name: Run Gradle actions
 
 on:
   workflow_call:
