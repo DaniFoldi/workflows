@@ -80,6 +80,7 @@ jobs:
         run: |
           echo ${{ secrets.github-token }} | gh auth login --with-token
           gh auth setup-git
+          git config user.name "GitHub Actions"
           git tag "v${{ steps.get-version.outputs.version }}" -a -m "${{ github.event.commits[0].message }}"
           git push origin "v${{ steps.get-version.outputs.version }}"
 
