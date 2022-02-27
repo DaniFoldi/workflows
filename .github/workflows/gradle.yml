@@ -7,7 +7,7 @@ on:
         required: true
         type: string
       java-version:
-        required: true
+        default: 0
         type: number
       java-distribution:
         default: "temurin"
@@ -34,10 +34,16 @@ jobs:
       - name: "Checkout repository"
         uses: actions/checkout@v2
 
+      - name: "Get build properties from gradle"
+        id: get-properties
+        run: |
+          echo "::set-output name=java-version::$(if [ "${{ inputs.java-version }}" = "0" ]; then; cat ${{ inputs.directory }}/build.gradle | sed -rn "s/^sourceCompatibility\s*=?\s*\(?\s*('|\")(JavaVersion\.VERSION_)?(.*)('|\")\s*\)?$/\2/p"; else; echo "${{ inputs.java-version }}"; fi)"
+          echo "::set-output name=version::$(cat ${{ inputs.directory }}/build.gradle | sed -rn "s/^version\s*=?\s*\(?\s*('|\")(.*)('|\")\s*\)?$/\2/p" | head -n 1)"
+
       - name: "Setup jdk"
         uses: actions/setup-java@v2
         with:
-          java-version: ${{ inputs.java-version }}
+          java-version: ${{ steps.get-properties.outputs.java-version }}
           distribution: ${{ inputs.java-distribution }}
 
       - name: "Cache gradle dependencies"
@@ -70,24 +76,19 @@ jobs:
           arguments: ${{ inputs.steps }}
           build-root-directory: ${{ inputs.directory }}
 
-      - name: "Get release version from gradle"
-        id: get-version
-        run: |
-          echo "::set-output name=version::$(cat ${{ inputs.directory }}/build.gradle | sed -rn "s/^version\s*=?\s*\(?\s*('|\")(.*)('|\")\s*\)?$/\2/p" | head -n 1)"
-
       - name: "Tag latest commit"
         if: inputs.github-release-files != ''
         run: |
           echo ${{ secrets.github-token }} | gh auth login --with-token
           gh auth setup-git
           git config user.name "GitHub Actions"
-          git tag "v${{ steps.get-version.outputs.version }}" -a -m "${{ github.event.commits[0].message }}"
-          git push origin "v${{ steps.get-version.outputs.version }}"
+          git tag "v${{ steps.get-properties.outputs.version }}" -a -m "${{ github.event.commits[0].message }}"
+          git push origin "v${{ steps.get-properties.outputs.version }}"
 
       - name: "Create draft GitHub release"
         if: inputs.github-release-files != ''
         run: |
-          gh release create -d --generate-notes "v${{ steps.get-version.outputs.version }}" ${{ inputs.directory }}/${{ inputs.github-release-files }}
+          gh release create -d --generate-notes "v${{ steps.get-properties.outputs.version }}" ${{ inputs.directory }}/${{ inputs.github-release-files }}
 
       - name: "Stop gradle daemon"
         uses: gradle/gradle-build-action@v2
