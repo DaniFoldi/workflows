@@ -37,8 +37,8 @@ jobs:
       - name: "Get build properties from gradle"
         id: get-properties
         run: |
-          echo "::set-output name=java-version::$([[ "${{ inputs.java-version }}" = "0" ]] && (cat ${{ inputs.directory }}/build.gradle | sed -rn "s/^sourceCompatibility\s*=?\s*\(?\s*('|\")?(JavaVersion\.VERSION_)?(.*)('|\")?\s*\)?$/\3/p") || echo "${{ inputs.java-version }}")"
-          echo "::set-output name=version::$(cat ${{ inputs.directory }}/build.gradle | sed -rn "s/^version\s*=?\s*\(?\s*('|\")?(.*)('|\")?\s*\)?$/\2/p" | head -n 1)"
+          echo "::set-output name=java-version::$([[ "${{ inputs.java-version }}" = "0" ]] && (cat ${{ inputs.directory }}/build.gradle | sed -rn "s/^sourceCompatibility\s*=?\s*\(?\s*('|\")?(JavaVersion\.VERSION_)?([^'^\"\)]*)('|\")?\s*\)?$/\3/p") || echo "${{ inputs.java-version }}")"
+          echo "::set-output name=version::$(cat ${{ inputs.directory }}/build.gradle | sed -rn "s/^version\s*=?\s*\(?\s*('|\")?([^'^\"\)]*)('|\")?\s*\)?$/\2/p" | head -n 1)"
 
       - name: "Setup jdk"
         uses: actions/setup-java@v2
