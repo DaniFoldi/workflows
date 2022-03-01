@@ -62,7 +62,7 @@ jobs:
       - name: Set endpoint output
         id: endpoint
         run: |
-          echo "::set-output name=id::$(echo "${{ inputs.endoint_id }}" | sed -rn "s/'([^']*)'/\1/p" | head -n 1)"
+          echo "::set-output name=id::$(echo "${{ inputs.endpoint_id }}" | sed -rn "s/'([^']*)'/\1/p" | head -n 1)"
 
       - name: Deploy stack to Portainer
         uses: carlrygart/portainer-stack-deploy@v1
