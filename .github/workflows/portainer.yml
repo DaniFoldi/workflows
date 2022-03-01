@@ -7,7 +7,6 @@ on:
         type: string
         required: true
       endpoint_id:
-        type: number
         required: true
       stack_name:
         type: string
@@ -59,13 +58,18 @@ jobs:
         run: |
           echo "::set-output name=variables::{\"stable\": \"${{ steps.latest.outputs.release }}\", \"beta\": \"${{ steps.latest.outputs.hash }}\"}"
 
+      - name: Set endpoint output
+        id: endpoint
+        run: |
+          echo "::set-output name=id::$(echo "${{ inputs.endoint_id }}" | sed -rn "s/'([^']*)'/\1/p" | head -n 1)"
+
       - name: Deploy stack to Portainer
         uses: carlrygart/portainer-stack-deploy@v1
         with:
           portainer-host: ${{ secrets.portainer_host }}
           username: ${{ inputs.portainer_user }}
           password: ${{ secrets.portainer_key }}
-          endpoint-id: ${{ inputs.endpoint }}
+          endpoint-id: ${{ steps.endpoint.outputs.id }}
           stack-name: ${{ inputs.stack_name }}
           stack-definition: ${{ inputs.stack_file }}
           template-variables: ${{ steps.template.outputs.variables || inputs.template }}
