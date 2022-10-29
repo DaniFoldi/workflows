@@ -1,0 +1,48 @@
+name: Run npm commands
+
+on:
+  workflow_call:
+    inputs:
+      run:
+        required: true
+        type: string
+
+      node-version:
+        default: 16
+        type: number
+
+      path:
+        default: "."
+        type: string
+      
+      build-timeout:
+        default: 15
+        type: number
+
+jobs:
+  npm-action:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repository
+        timeout-minutes: 5
+        uses: actions/checkout@v3
+        with:
+          path: ${{ inputs.path }}
+
+      - name: Install node
+        timeout-minutes: 5
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ inputs.node-version }}
+          cache: npm
+
+      - name: Install dependencies
+        timeout-minutes: 5
+        run: |
+          npm ci --no-progress
+
+      - name: Run task
+        timeout-minutes: ${{ inputs.build-timeout }}
+        run: |
+          ${{ inputs.run }}

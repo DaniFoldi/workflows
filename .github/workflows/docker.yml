@@ -15,6 +15,9 @@ on:
       dockerfile_target:
         default: app
         type: string
+      build-timeout:
+        default: 15
+        type: number
     secrets:
       registry_password:
         required: true
@@ -25,16 +28,20 @@ jobs:
     steps:
 
     - name: Checkout
+      timeout-minutes: 5
       uses: actions/checkout@v2
 
     - name: Set up QEMU
+      timeout-minutes: 5
       uses: docker/setup-qemu-action@v1
 
     - name: Set up Docker Buildx
+      timeout-minutes: 5
       id: buildx
       uses: docker/setup-buildx-action@v1
 
     - name: Login to registry
+      timeout-minutes: 5
       uses: docker/login-action@v1
       with:
         registry: ${{ inputs.registry_url }}
@@ -42,18 +49,22 @@ jobs:
         password: ${{ secrets.registry_password }}
 
     - name: Get latest commit hash
+      timeout-minutes: 5
       id: fetch-latest-hash
       run: echo "::set-output name=latest-hash::$(git rev-parse --short $GITHUB_SHA)"
 
     - name: Fetch latest release version
+      timeout-minutes: 5
       id: fetch-latest-release
       uses: reloc8/action-latest-release-version@1.0.0
 
     - name: Lowercase repo name
+      timeout-minutes: 5
       id: repo-name
       run: echo "::set-output name=lowercase-name::$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')"
 
     - name: Get container tags
+      timeout-minutes: 5
       id: container-tags
       run: |
           if [ ${{ github.event_name }} == "release" ]
@@ -64,6 +75,7 @@ jobs:
           fi
 
     - name: Build and push
+      timeout-minutes: ${{ inputs.build-timeout }}
       id: docker-build
       uses: docker/build-push-action@v2
       with:

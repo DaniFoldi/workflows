@@ -33,17 +33,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        timeout-minutes: 5
+        uses: actions/checkout@v3
 
       - name: Checkout target repository
+        timeout-minutes: 5
         if: inputs.template == 'LATEST-VERSIONS'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           token: ${{ secrets.gh_token }}
           repository: ${{ inputs.repository }}
           path: target
 
       - name: Fetch latest release data
+        timeout-minutes: 5
         id: latest
         if: inputs.template == 'LATEST-VERSIONS'
         working-directory: target
@@ -54,17 +57,20 @@ jobs:
           echo "::set-output name=hash::$(git rev-parse --short HEAD)"
  
       - name: Set template output
+        timeout-minutes: 5
         id: template
         if: inputs.template == 'LATEST-VERSIONS'
         run: |
           echo "::set-output name=variables::{\"stable\": \"${{ steps.latest.outputs.release }}\", \"beta\": \"${{ steps.latest.outputs.hash }}\"}"
 
       - name: Set endpoint output
+        timeout-minutes: 5
         id: endpoint
         run: |
           echo "::set-output name=id::$(echo "${{ inputs.endpoint_id }}" | sed -rn "s/'([^']*)'/\1/p" | head -n 1)"
 
       - name: Deploy stack to Portainer
+        timeout-minutes: 5
         uses: carlrygart/portainer-stack-deploy@v1
         with:
           portainer-host: ${{ secrets.portainer_host }}
