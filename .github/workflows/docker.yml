@@ -42,7 +42,7 @@ jobs:
 
     - name: Login to registry
       timeout-minutes: 5
-      uses: docker/login-action@v1
+      uses: docker/login-action@v3
       with:
         registry: ${{ inputs.registry_url }}
         username: ${{ inputs.registry_username }}
