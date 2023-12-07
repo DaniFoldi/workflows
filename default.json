@@ -12,7 +12,6 @@
     ":automergeRequireAllStatusChecks",
     "npm:unpublishSafe"
   ],
-  "osvVulnerabilityAlerts": true,
   "rangeStrategy": "bump",
   "timezone": "CET"
 }
