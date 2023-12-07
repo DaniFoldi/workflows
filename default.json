@@ -2,5 +2,11 @@
   "commitMessagePrefix": ":paperclip:",
   "extends": ["config:base", "schedule:nonOfficeHours", "group:allNonMajor", ":automergeMinor", ":automergeRequireAllStatusChecks" ],
   "rangeStrategy": "bump",
-  "timezone": "CET"
+  "timezone": "CET",
+  "packageRules": [
+    {
+      "managers": [ "npm" ],
+      "additionalBranchPrefix": "{{baseDir}}/"
+    }
+  ]
 }
