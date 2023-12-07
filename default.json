@@ -5,7 +5,9 @@
   "commitMessageSuffix": "({{parentDir}})",
   "configMigration": true,
   "extends": [
-    "config:best-practices",
+    "config:recommended",
+    "docker:pinDigests",
+    "helpers:pinGitHubActionDigests",
     "schedule:nonOfficeHours",
     "group:allNonMajor",
     ":automergeMinor",
