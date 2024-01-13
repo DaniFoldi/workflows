@@ -1,5 +1,5 @@
 {
-  "additionalBranchPrefix": "dep{{parentDir}}-",
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "assigneesFromCodeOwners": true,
   "commitMessagePrefix": ":paperclip:",
   "commitMessageSuffix": "({{parentDir}})",
@@ -12,8 +12,29 @@
     "group:allNonMajor",
     ":automergeMinor",
     ":automergeRequireAllStatusChecks",
-    "npm:unpublishSafe"
+    "npm:unpublishSafe",
+    "workarounds:nodeDockerVersioning",
+    "workarounds:typesNodeVersioning"
   ],
+  "packageRules": [
+    {
+      "matchDepTypes": [ "dependencies" ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "groupName": "dependencies-{{parentDir}}"
+    },
+    {
+      "matchDepTypes": [ "devDependencies" ],
+      "matchUpdateTypes": [
+          "minor",
+          "patch"
+      ],
+      "groupName": "devDependencies"
+    }
+  ],
+  "prConcurrentLimit": 5,
   "rangeStrategy": "bump",
   "timezone": "CET"
 }
