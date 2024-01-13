@@ -34,12 +34,12 @@ jobs:
     steps:
       - name: Checkout repository
         timeout-minutes: 5
-        uses: actions/checkout@v4
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
 
       - name: Checkout target repository
         timeout-minutes: 5
         if: inputs.template == 'LATEST-VERSIONS'
-        uses: actions/checkout@v4
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
         with:
           token: ${{ secrets.gh_token }}
           repository: ${{ inputs.repository }}
@@ -71,7 +71,7 @@ jobs:
 
       - name: Deploy stack to Portainer
         timeout-minutes: 5
-        uses: carlrygart/portainer-stack-deploy@v1
+        uses: carlrygart/portainer-stack-deploy@843b5bdb502309b6c45e250e75b550413194dc74 # v1
         with:
           portainer-host: ${{ secrets.portainer_host }}
           username: ${{ inputs.portainer_user }}
