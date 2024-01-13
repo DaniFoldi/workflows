@@ -2,14 +2,13 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "assigneesFromCodeOwners": true,
   "commitMessagePrefix": ":paperclip:",
-  "commitMessageSuffix": "({{parentDir}})",
   "configMigration": true,
   "extends": [
     "config:recommended",
     "docker:pinDigests",
     "helpers:pinGitHubActionDigests",
     "schedule:nonOfficeHours",
-    "group:allNonMajor",
+    ":automergeDigest",
     ":automergeMinor",
     ":automergeRequireAllStatusChecks",
     "npm:unpublishSafe",
@@ -23,7 +22,8 @@
         "minor",
         "patch"
       ],
-      "groupName": "dependencies-{{parentDir}}"
+      "groupName": "dependencies-{{parentDir}}",
+      "commitMessageSuffix": "({{parentDir}})"
     },
     {
       "matchDepTypes": [ "devDependencies" ],
