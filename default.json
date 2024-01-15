@@ -15,6 +15,7 @@
     "workarounds:nodeDockerVersioning",
     "workarounds:typesNodeVersioning"
   ],
+  "npmrcMerge": true,
   "packageRules": [
     {
       "matchDepTypes": [ "dependencies" ],
