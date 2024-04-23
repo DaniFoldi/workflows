@@ -33,6 +33,11 @@
           "patch"
       ],
       "groupName": "devDependencies"
+    },
+    {
+      "matchPackageNames": [ "eslint" ],
+      "matchUpdateTypes": [ "major" ],
+      "enabled": false
     }
   ],
   "prConcurrentLimit": 5,
