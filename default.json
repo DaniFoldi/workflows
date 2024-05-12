@@ -38,6 +38,14 @@
       "matchPackageNames": [ "eslint" ],
       "matchUpdateTypes": [ "major" ],
       "enabled": false
+    },
+    {
+      "matchDepNames": [ "vitest" ],
+      "allowedVersions": "<1.6.0"
+    },
+    {
+      "matchCurrentVersion": "/^(0.)|-/",
+      "groupName": "{{{depNameSanitized}}}"
     }
   ],
   "prConcurrentLimit": 5,
