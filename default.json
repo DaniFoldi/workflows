@@ -44,7 +44,7 @@
       "allowedVersions": "<1.6.0"
     },
     {
-      "matchCurrentVersion": "/^(0.)|-/",
+      "matchCurrentVersion": "/^(0.)|.*-/",
       "groupName": "{{{depNameSanitized}}}"
     }
   ],
