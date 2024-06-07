@@ -35,11 +35,6 @@
       "groupName": "devDependencies"
     },
     {
-      "matchPackageNames": [ "eslint" ],
-      "matchUpdateTypes": [ "major" ],
-      "enabled": false
-    },
-    {
       "matchDepNames": [ "vitest" ],
       "allowedVersions": "<1.6.0"
     },
