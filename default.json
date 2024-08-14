@@ -23,7 +23,7 @@
         "minor",
         "patch"
       ],
-      "groupName": "dependencies-{{#if (equals parentDir '')}}root{{else}}{{parentDir}}{{/if}}",
+      "groupName": "dependencies{{#if (equals parentDir '')}}{{else}}-{{parentDir}}{{/if}}",
       "commitMessageSuffix": "({{#if (equals parentDir '')}}root{{else}}{{parentDir}}{{/if}})"
     },
     {
