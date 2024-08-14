@@ -24,7 +24,7 @@
         "patch"
       ],
       "groupName": "dependencies-{{parentDir}}",
-      "commitMessageSuffix": "({{parentDir}})"
+      "commitMessageSuffix": "({{#if (equals parentDir '')}}root{{else}}{{parentDir}}{{/if}})"
     },
     {
       "matchDepTypes": [ "devDependencies" ],
