@@ -36,7 +36,7 @@
     },
     {
       "matchDepNames": [ "vitest" ],
-      "allowedVersions": "<1.6.0"
+      "groupName": "vitest"
     },
     {
       "matchCurrentVersion": "/^(0.)|.*-/",
