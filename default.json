@@ -39,6 +39,10 @@
       "groupName": "vitest"
     },
     {
+      "matchDepNames": [ "prisma", "@prisma/client" ],
+      "groupName": "prisma"
+    },
+    {
       "matchCurrentVersion": "/^(0.)|.*-/",
       "groupName": "{{{depNameSanitized}}}"
     }
