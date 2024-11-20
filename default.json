@@ -7,7 +7,6 @@
     "config:recommended",
     "docker:pinDigests",
     "helpers:pinGitHubActionDigests",
-    "schedule:nonOfficeHours",
     ":automergeDigest",
     ":automergeMinor",
     ":automergeRequireAllStatusChecks",
@@ -49,6 +48,9 @@
   ],
   "prConcurrentLimit": 5,
   "rangeStrategy": "bump",
+  "schedule": [
+    "* 1-6 * * *"
+  ],
   "timezone": "CET",
   "updateNotScheduled": false
 }
