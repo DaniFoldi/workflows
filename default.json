@@ -34,6 +34,10 @@
       "groupName": "devDependencies"
     },
     {
+      "matchDepTypes": [ "pnpm.overrides" ],
+      "enabled": false
+    },
+    {
       "matchDepNames": [ "vitest" ],
       "groupName": "vitest"
     },
