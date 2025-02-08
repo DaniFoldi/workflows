@@ -53,7 +53,7 @@
   "prConcurrentLimit": 5,
   "rangeStrategy": "bump",
   "schedule": [
-    "* 1-6 * * *"
+    "* 1-8 * * *"
   ],
   "timezone": "CET",
   "updateNotScheduled": false
