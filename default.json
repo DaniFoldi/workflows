@@ -46,6 +46,14 @@
       "groupName": "prisma"
     },
     {
+      "matchDepNames": [ "drizzle-orm", "drizzle-kit", "drizzle-zod" ],
+      "groupName": "drizzle"
+    },
+    {
+      "matchDepNames": [ "@lexical/*", "lexical", "lexical-vue" ],
+      "groupName": "lexical"
+    },
+    {
       "matchCurrentVersion": "/^(0.)|.*-/",
       "groupName": "{{{depNameSanitized}}}"
     }
