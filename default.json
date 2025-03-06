@@ -50,7 +50,16 @@
       "groupName": "drizzle"
     },
     {
-      "matchDepNames": [ "@lexical/*", "lexical", "lexical-vue" ],
+      "matchDepNames": [
+        "@lexical/link",
+        "@lexical/list",
+        "@lexical/markdown",
+        "@lexical/rich-text",
+        "@lexical/selection",
+        "@lexical/table",
+        "@lexical/utils",
+        "lexical",
+        "lexical-vue" ],
       "groupName": "lexical"
     },
     {
