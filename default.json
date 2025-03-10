@@ -51,6 +51,7 @@
     },
     {
       "matchDepNames": [
+        "@lexical/code",
         "@lexical/link",
         "@lexical/list",
         "@lexical/markdown",
@@ -59,7 +60,8 @@
         "@lexical/table",
         "@lexical/utils",
         "lexical",
-        "lexical-vue" ],
+        "lexical-vue"
+      ],
       "groupName": "lexical"
     },
     {
