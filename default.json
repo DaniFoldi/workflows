@@ -38,6 +38,10 @@
       "enabled": false
     },
     {
+      "matchCurrentVersion": "/^(0.)|.*-/",
+      "groupName": "{{{depNameSanitized}}}"
+    },
+    {
       "matchDepNames": [ "vitest" ],
       "groupName": "vitest"
     },
@@ -63,10 +67,6 @@
         "lexical-vue"
       ],
       "groupName": "lexical"
-    },
-    {
-      "matchCurrentVersion": "/^(0.)|.*-/",
-      "groupName": "{{{depNameSanitized}}}"
     }
   ],
   "prConcurrentLimit": 5,
