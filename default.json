@@ -46,6 +46,10 @@
       "groupName": "vitest"
     },
     {
+      "matchDepNames": [ "zod" ],
+      "groupName": "zod"
+    },
+    {
       "matchDepNames": [ "prisma", "@prisma/client" ],
       "groupName": "prisma"
     },
