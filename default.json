@@ -71,6 +71,14 @@
         "lexical-vue"
       ],
       "groupName": "lexical"
+    },
+    {
+      "matchDepNames": [
+        "lucide-vue-next",
+        "lucide-react",
+        "lucide-react-native"
+      ],
+      "groupName": "lucide"
     }
   ],
   "prConcurrentLimit": 5,
