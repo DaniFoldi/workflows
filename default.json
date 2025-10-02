@@ -42,16 +42,16 @@
       "groupName": "{{{depNameSanitized}}}"
     },
     {
-      "matchDepNames": [ "vitest" ],
-      "groupName": "vitest"
-    },
-    {
       "matchDepNames": [ "zod" ],
       "groupName": "zod"
     },
     {
       "matchDepNames": [ "prisma", "@prisma/client" ],
       "groupName": "prisma"
+    },
+    {
+      "matchDepNames": [ "playwright", "@playwright/test" ],
+      "groupName": "playwright"
     },
     {
       "matchDepNames": [ "drizzle-orm", "drizzle-kit", "drizzle-zod" ],
